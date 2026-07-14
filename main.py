@@ -26,6 +26,9 @@ class Player:
 
     def shoot(self):
         print("bullet shot")
+
+    def show_abilities(self):
+        print("abilities")
         
         
 
@@ -43,11 +46,11 @@ for player_entry in range(no_of_players):
     addplayer()
     if player_entry != no_of_players - 1:
         print(" Please pass the device to the next player ")
-        #time.sleep(1)
+        time.sleep(1)
         #clear_screen()
     else:
         print("Let Everyone see the screen now !")
-        #time.sleep(1)
+        time.sleep(1)
 
     
 max_bullet = int(round(2.5*no_of_players,0))
@@ -84,29 +87,30 @@ while winner_not_decided:
         ind = players.index(current_player)
         start_of_game = False
 
-    load_gun()
-
+    
+    gun=[]
     if len(gun) == 0:
         print("Round : ",rounds)
         print("Loading Gun .................. ")
-        #time.sleep(1)
+        load_gun()
+        time.sleep(1)
         #clear_screen()
         print("Gun Loaded !! ")
         print("Live Bullets =",gun.count(True))
         print("Fake Bullets =",gun.count(False))
-        round +=1
+        rounds +=1
 
     print("PLayer",current_player.name,"Make a Move")
     decision = int(input("1.Kill\n2.Use\n3.End my move\n"))
-    clear_screen()
     if decision == 1:
         current_player.shoot()
-
+    elif decision == 2:
+        current_player.show_abilities()
     elif decision == 3:
         if ind == no_of_players - 1:
             ind = 0
         elif 0 <= ind < no_of_players - 1:
             ind += 1
         current_player = players[ind]
-    
+        #clear_screen()
     
