@@ -6,7 +6,7 @@ bullet = [True,False]
 players = []
 winner_not_decided = True
 HEARTS = 5
-
+power_of_shot = 1
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -19,11 +19,12 @@ def addplayer():
 class Player:
     def __init__(self, name): 
         self.abilities = {}
+        self.ability_left = True
         self.name = name
         self.hearts = HEARTS
 
     def shoot(self):
-        global no_of_players_alive, winner_not_decided, current_player, ind
+        global no_of_players_alive, winner_not_decided, current_player, ind, power_of_shot
         #clear_screen()
         print("choose the player to shoot: ")
         for player in players:
@@ -34,7 +35,7 @@ class Player:
             print(players[ind].name, "shot", players[player_to_shoot].name)
             if gun[0]:
                 player = players[player_to_shoot]
-                player.hearts = player.hearts - 1 
+                player.hearts = player.hearts - power_of_shot 
                 print("It was a LIVE !! Bullet ")
                 print(player.name, players.index(player),end = "-" * 5)
                 print(player.hearts * " ❤︎ " )
@@ -73,27 +74,55 @@ class Player:
             current_player.shoot()
 
     def show_abilities(self):
-        print("abilities")
+        if not len(current_player.abilities) == 0:
+            for ab in current_player.abilities:
+                print(ab, sep= " " * 5) 
+            ability_decision_ind = input("enter the number before the ability id ")
+            ability_list = list(current_player.abilities.keys())
+            index_ability_list = [_[0] for _ in ability_list]
+            if ability_decision_ind in index_ability_list:
+                current_player.abilities[ability_list[int(ability_decision_ind)]]()
+                current_player.abilities.pop(ability_list[int(ability_decision_ind)])
+                update_ability()
+            else:
+                print("Please enter valid ability id")
+        else:
+            print("You Ran out of Abilities") 
+            self.ability_left = False   
+
+def update_ability():
+    global current_player
+    ability_index = 0
+    new_ability_dict={}
+    for key in current_player.abilities:
+        count_of_item = len([k for k in current_player.abilities if key in k[:-1]]) 
+        new_key = f"{str(ability_index)} {key[2:-2]} {str(count_of_item)}"  
+        value = current_player.abilities[key]
+        new_ability_dict[new_key] = value              
+        ability_index += 1
+    current_player.abilities = new_ability_dict
 
 
 def use_magnify_glass():
-    pass
+    print("Using magnifying glass")
 def use_hand_saw():
-    pass
+    global power_of_shot
+    power_of_shot = 2
+    print("Power increased -=>|")
 def use_handcuff():
-    pass
+    print("handcuffed player")
 def drink_beer():
-    pass
+    print("Drank beer")
 def use_cigar():
-    pass
+    print("used cigar HP++ ")
 def call_hacker():
-    pass
+    print("Dialing hacker")
 def inverter():
-    pass
+    print("inverting the bullets")
 def drink_medicine():
-    pass
+    print("Drank medicine")
 def use_adrenaline():
-    pass 
+    print("used adrenaline") 
 
 abilities = {
     "Magnifying Glass": use_magnify_glass,
@@ -108,12 +137,15 @@ abilities = {
 }
 def generate_ability():
     for player in players:
+        player.ability_left = True
+        ability_index = 0
         for _ in range(3):
             if len(player.abilities) < 8:
                 key,value = random.choice(list(abilities.items()))
                 count_of_item = len([k for k in player.abilities if key in k[:-1]]) 
-                key = key + str(count_of_item)                 
+                key = f"{str(ability_index)} <=- {key} {str(count_of_item)}"                
                 player.abilities[key] = value
+                ability_index += 1
     print("Each player has recieved their special items to use ")
 
 print("---------------Welcome to BUCKSHOT---------------")
@@ -135,7 +167,7 @@ for player_entry in range(no_of_players):
         #clear_screen()
     else:
         print("Let Everyone see the screen now !")
-        time.sleep(1)
+        #time.sleep(1)
 
     
 max_bullet = int(round(2.5*no_of_players,0))
@@ -173,15 +205,16 @@ while winner_not_decided:
         start_of_game = False
 
     if len(gun) == 0:
+        generate_ability()
         print("Round : ",rounds)
         print("Loading Gun .................. ")
         load_gun()
-        time.sleep(1)
+        #time.sleep(1)
         #clear_screen()
         print("Gun Loaded !! ")
         print("Live Bullets =",gun.count(True))
         print("Fake Bullets =",gun.count(False))
-        generate_ability()
+        
         rounds +=1
 
     print("PLayer",current_player.name,"Make a Move")
@@ -189,7 +222,10 @@ while winner_not_decided:
     if decision == 1:
         sp_cond = current_player.shoot()
     elif decision == 2:
-        current_player.show_abilities()
+        if current_player.ability_left:
+            current_player.show_abilities()
     else:
         clear_screen()
         print("Please enter valid numbers as shown: ")  
+
+#when abilities run out there should be some other message taking in or some other mechanism
