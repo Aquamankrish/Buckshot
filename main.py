@@ -105,24 +105,47 @@ def update_ability():
 
 def use_magnify_glass():
     print("Using magnifying glass")
+    if gun[-1]:
+        print("Live bulltet")
+    else:
+        print("Fake bullet")
 def use_hand_saw():
     global power_of_shot
     power_of_shot = 2
     print("Power increased -=>|")
-def use_handcuff():
-    print("handcuffed player")
 def drink_beer():
-    print("Drank beer")
+    if gun[-1]:
+        print("Ejected Live bulltet")
+    else:
+        print("Ejected Fake bullet")
+    gun.pop()
 def use_cigar():
-    print("used cigar HP++ ")
+    current_player.hearts+=1
+    print("{current_player.name} used Beer")
+    print(current_player.hearts * " ❤︎ ")
 def call_hacker():
     print("Dialing hacker")
+
 def inverter():
-    print("inverting the bullets")
+    for bi in range(len(gun)):
+        if gun[bi]:
+            gun[bi] = False
+        else:
+            gun[bi] = True
+    print("Inverting the bullets")
 def drink_medicine():
-    print("Drank medicine")
+    lucky = bool(random.randint(0,1))
+    if lucky:
+        current_player.hearts+=2
+        print("{current_player.name} drank medicine... LUCKY")    
+    else:
+        current_player.hearts-=1
+        print("{current_player.name} drank medicine... UNFORTUNATE")
+    print(current_player.hearts * " ❤︎ ")       
 def use_adrenaline():
     print("used adrenaline") 
+def use_handcuff():
+    print("handcuffed player")
 
 abilities = {
     "Magnifying Glass": use_magnify_glass,
@@ -209,6 +232,7 @@ while winner_not_decided:
         print("Round : ",rounds)
         print("Loading Gun .................. ")
         load_gun()
+        gun_round = gun.copy()
         #time.sleep(1)
         #clear_screen()
         print("Gun Loaded !! ")
@@ -216,13 +240,17 @@ while winner_not_decided:
         print("Fake Bullets =",gun.count(False))
         
         rounds +=1
-
+    print(".................................",len(gun_round))
     print("PLayer",current_player.name,"Make a Move")
-    decision = int(input("1.Kill\n2.Show Special Items\n3.End my move\n"))
+    if current_player.ability_left:
+        decision = int(input("1.Kill\n2.Show Special Items\n"))
+    else:
+        decision = int(input("1.Kill\n"))
+
+
     if decision == 1:
         sp_cond = current_player.shoot()
-    elif decision == 2:
-        if current_player.ability_left:
+    elif decision == 2 and current_player.ability_left:
             current_player.show_abilities()
     else:
         clear_screen()
