@@ -30,18 +30,18 @@ class Player:
         for player in players:
             print(player.name, players.index(player),end = "-" * 5)
             print(player.hearts * " ❤︎ " )
-        player_to_shoot = int(input(f"which head to shoot {player.name}?? Enter the number after the player name ?"))
+        player_to_shoot = int(input(f"which head to shoot {current_player.name}?? Enter the number after the player name ?"))
         try:
             print(players[ind].name, "shot", players[player_to_shoot].name)
             if gun[0]:
-                player = players[player_to_shoot]
-                player.hearts = player.hearts - power_of_shot 
+                player_t = players[player_to_shoot]
+                player_t.hearts = player_t.hearts - power_of_shot 
+                power_of_shot = 1
                 print("It was a LIVE !! Bullet ")
-                print(player.name, players.index(player),end = "-" * 5)
-                print(player.hearts * " ❤︎ " )
-                if player.hearts == 0:
-                    print(player.name,"IS DEAD !!")
-                    players.remove(player)
+                print(player_t.hearts * " ❤︎ " )
+                if player_t.hearts == 0:
+                    print(player_t.name,"IS DEAD !!")
+                    players.remove(player_t)
                     no_of_players_alive -= 1
                     print("index",ind)
                     if ind > no_of_players_alive - 1:
@@ -83,24 +83,13 @@ class Player:
             if ability_decision_ind in index_ability_list:
                 current_player.abilities[ability_list[int(ability_decision_ind)]]()
                 current_player.abilities.pop(ability_list[int(ability_decision_ind)])
-                update_ability()
+                update_ability(current_player)
             else:
                 print("Please enter valid ability id")
         else:
             print("You Ran out of Abilities") 
             self.ability_left = False   
 
-def update_ability():
-    global current_player
-    ability_index = 0
-    new_ability_dict={}
-    for key in current_player.abilities:
-        count_of_item = len([k for k in current_player.abilities if key in k[:-1]]) 
-        new_key = f"{str(ability_index)} {key[2:-2]} {str(count_of_item)}"  
-        value = current_player.abilities[key]
-        new_ability_dict[new_key] = value              
-        ability_index += 1
-    current_player.abilities = new_ability_dict
 
 
 def use_magnify_glass():
@@ -124,8 +113,17 @@ def use_cigar():
     print("{current_player.name} used Beer")
     print(current_player.hearts * " ❤︎ ")
 def call_hacker():
-    print("Dialing hacker")
-
+    round_len = len(gun_round)
+    revealed_list = []
+    random_bullet_index = random.randrange(0, round_len)
+    while random_bullet_index in revealed_list and len(revealed_list) != round_len:
+        random_bullet_index = random.randrange(0, round_len)
+    else:          
+        revealed_list.append(random_bullet_index)
+        if gun_round[random_bullet_index]:
+                print(random_bullet_index+1, "is a LIVE Bullet")
+        else:
+                print(random_bullet_index+1, "is a FAKE Bullet")
 def inverter():
     for bi in range(len(gun)):
         if gun[bi]:
@@ -143,10 +141,9 @@ def drink_medicine():
         print("{current_player.name} drank medicine... UNFORTUNATE")
     print(current_player.hearts * " ❤︎ ")       
 def use_adrenaline():
-    print("used adrenaline") 
+    print("used adrenaline")
 def use_handcuff():
     print("handcuffed player")
-
 abilities = {
     "Magnifying Glass": use_magnify_glass,
     "Hand Saw" : use_hand_saw,
@@ -158,6 +155,7 @@ abilities = {
     "Expired Medicine" : drink_medicine,
     "Adrenaline" : use_adrenaline
 }
+
 def generate_ability():
     for player in players:
         player.ability_left = True
@@ -165,11 +163,24 @@ def generate_ability():
         for _ in range(3):
             if len(player.abilities) < 8:
                 key,value = random.choice(list(abilities.items()))
-                count_of_item = len([k for k in player.abilities if key in k[:-1]]) 
+                count_of_item = list(player.abilities.values()).count(value) 
                 key = f"{str(ability_index)} <=- {key} {str(count_of_item)}"                
                 player.abilities[key] = value
                 ability_index += 1
+        if not( len(player.abilities) <= 3):
+            update_ability(player)
     print("Each player has recieved their special items to use ")
+
+def update_ability(player):
+    ability_index = 0
+    new_ability_dict={}
+    for key,val in player.abilities.items():
+        #count_of_item = len([k for k in player.abilities if key in k[:-1]])
+        count_of_item = list(player.abilities.values()).count(val)
+        new_key = f"{str(ability_index)} {key[2:-2]} {str(count_of_item)}"  
+        new_ability_dict[new_key] = val
+        ability_index += 1
+    player.abilities = new_ability_dict
 
 print("---------------Welcome to BUCKSHOT---------------")
 
@@ -257,3 +268,17 @@ while winner_not_decided:
         print("Please enter valid numbers as shown: ")  
 
 #when abilities run out there should be some other message taking in or some other mechanism
+# after each round take the player abilities and make the indexing count correct
+#PLayer CCC Make a Move
+# 1.Kill
+# 2.Show Special Items
+# 2
+# 0 <=- Cigarette Pack 0
+# 1 <=- Cigarette Pack 1
+# 2 <=- Cigarette Pack 2
+# 0 <=- Inverter 0
+# 1 <=- Adrenaline 0
+# 2 <=- Hacker Phone 0
+# 0 <=- Cigarette Pack 3
+# 1 <=- Inverter 1
+# enter the number before the ability id 
