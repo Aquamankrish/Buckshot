@@ -54,8 +54,8 @@ No external packages are required.
 ### 1. Clone the repository
 
 ``` bash
-git clone <YOUR_REPOSITORY_URL>
-cd <YOUR_REPOSITORY_NAME>
+git clone https://github.com/Aquamankrish/Buckshot.git
+cd Buckshot
 ```
 
 ### 2. Run the game
@@ -399,38 +399,6 @@ Randomly selects the player who begins the game.
 
 ------------------------------------------------------------------------
 
-## 🗂️ Suggested Project Structure
-
-A simple version can look like:
-
-``` text
-BUCKSHOT/
-│
-├── main.py
-├── README.md
-└── LICENSE
-```
-
-As the project grows, it could be reorganized into:
-
-``` text
-BUCKSHOT/
-│
-├── main.py
-├── game/
-│   ├── player.py
-│   ├── gun.py
-│   └── abilities.py
-│
-├── tests/
-│   └── test_game.py
-│
-├── README.md
-└── LICENSE
-```
-
-------------------------------------------------------------------------
-
 ## ⚠️ Current Limitations
 
 This version is a prototype and contains several areas that can be
@@ -535,27 +503,10 @@ The game continues until only one player survives.
 
 ------------------------------------------------------------------------
 
-## 📜 License
-
-Add your preferred license here.
-
-For example:
-
-``` text
-MIT License
-```
-
-If this project is intended to be publicly distributed, add a separate
-`LICENSE` file to the repository.
-
-------------------------------------------------------------------------
-
 ## 👨‍💻 Author
 
-**Your Name**
-
-Replace this section with your name, GitHub profile, and other project
-links.
+**Sahasrad Krish V S**
+Student of st.joseph's college B.tech & IIT madras online BS
 
 ------------------------------------------------------------------------
 
